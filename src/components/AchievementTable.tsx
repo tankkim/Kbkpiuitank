@@ -20,7 +20,7 @@ export function AchievementTable({ data }: AchievementTableProps) {
     <table className="w-full border-collapse" style={{ fontSize: '10px' }}>
       <thead className="bg-gray-700 text-white sticky top-0">
         <tr>
-          <th className="border border-gray-400 px-1 py-1 text-center" style={{ minWidth: '70px' }}>BANK RANK</th>
+          <th className="border border-gray-400 px-1 py-1 text-center" style={{ minWidth: '70px' }}>BANKWIDE RANK</th>
           <th className="border border-gray-400 px-1 py-1 text-center" style={{ minWidth: '70px' }}>REGION RANK</th>
           <th className="border border-gray-400 px-1 py-1 text-left" style={{ minWidth: '140px' }}>BRANCH</th>
           <th className="border border-gray-400 px-1 py-1 text-center" style={{ minWidth: '55px' }}>RATING</th>

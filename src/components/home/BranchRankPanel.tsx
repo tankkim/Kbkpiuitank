@@ -58,13 +58,13 @@ export function BranchRankPanel() {
 
   return (
     <div className="space-y-6 lg:sticky lg:top-6 h-fit">
-      {/* Branch Rank Panel */}
+      {/* Bankwide Rank Panel */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {/* Tab Selector */}
         <div className="flex border-b border-gray-200">
           <button
             onClick={() => setActiveTab('branch')}
-            className={`flex-1 px-4 py-2.5 text-sm transition-colors ${
+            className={`flex-1 px-3 py-1.5 text-[10px] transition-colors ${
               activeTab === 'branch'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -74,7 +74,7 @@ export function BranchRankPanel() {
           </button>
           <button
             onClick={() => setActiveTab('region')}
-            className={`flex-1 px-4 py-2.5 text-sm transition-colors ${
+            className={`flex-1 px-3 py-1.5 text-[10px] transition-colors ${
               activeTab === 'region'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -85,24 +85,24 @@ export function BranchRankPanel() {
         </div>
 
         {/* M&D Tab Header */}
-        <div className="bg-[#2c5282] text-white px-4 py-1.5 text-xs">
+        <div className="bg-[#2c5282] text-white px-3 py-1 text-[9px]">
           M&D
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-2.5">
           {activeTab === 'branch' ? (
             <>
-              {/* Branch Rank Title */}
-              <h4 className="text-sm mb-3 text-gray-800">Branch Rank</h4>
+              {/* Bankwide Rank Title */}
+              <h4 className="text-[10px] mb-2 text-gray-800">Bankwide Rank</h4>
 
               {/* Top 5 Branch */}
-              <div className="mb-4">
-                <h5 className="text-sm text-orange-600 mb-3">Top 5 Branch</h5>
-                <div className="space-y-2.5">
+              <div className="mb-3">
+                <h5 className="text-[10px] text-orange-600 mb-1.5">Top 5 Branch</h5>
+                <div className="space-y-1.5">
                   {branchData.top5.map((branch, index) => (
-                    <div key={index} className="flex items-center gap-3 text-xs">
-                      <div className="w-10 flex justify-center">
+                    <div key={index} className="flex items-center gap-2 text-[9px]">
+                      <div className="w-8 flex justify-center">
                         <RankChangeIcon change={branch.change} value={branch.value} />
                       </div>
                       <div className="flex-1">
@@ -117,11 +117,11 @@ export function BranchRankPanel() {
 
               {/* Bottom 5 Branch */}
               <div>
-                <h5 className="text-sm text-orange-600 mb-3">Bottom 5 Branch</h5>
-                <div className="space-y-2.5">
+                <h5 className="text-[10px] text-orange-600 mb-1.5">Bottom 5 Branch</h5>
+                <div className="space-y-1.5">
                   {branchData.bottom5.map((branch, index) => (
-                    <div key={index} className="flex items-center gap-3 text-xs">
-                      <div className="w-10 flex justify-center">
+                    <div key={index} className="flex items-center gap-2 text-[9px]">
+                      <div className="w-8 flex justify-center">
                         <RankChangeIcon change={branch.change} value={branch.value} />
                       </div>
                       <div className="flex-1">
@@ -137,13 +137,13 @@ export function BranchRankPanel() {
           ) : (
             <>
               {/* Region Rank Title */}
-              <h4 className="text-sm mb-3 text-gray-800">Region Rank</h4>
+              <h4 className="text-[10px] mb-2 text-gray-800">Region Rank</h4>
 
               {/* All Regions */}
-              <div className="space-y-2.5">
+              <div className="space-y-1.5">
                 {regionData.map((region, index) => (
-                  <div key={index} className="flex items-center gap-3 text-xs">
-                    <div className="w-10 flex justify-center">
+                  <div key={index} className="flex items-center gap-2 text-[9px]">
+                    <div className="w-8 flex justify-center">
                       <RankChangeIcon change={region.change} value={region.value} />
                     </div>
                     <div className="flex-1">

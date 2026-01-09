@@ -1,19 +1,102 @@
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { kpiData } from '../data/kpiData';
 import { PageHeader } from './PageHeader';
+import { performanceData } from '../data/scoreboardData';
 
 interface ScoreboardProps {
   unreadNotificationsCount?: number;
   onNotificationClick?: () => void;
 }
 
+// Branch and Region Data
+interface BranchOption {
+  id: string;
+  name: string;
+  code: string;
+  region: string;
+  manager: string;
+}
+
+const branches: BranchOption[] = [
+  { id: 'br-1', name: 'JAKARTA PUSAT', code: 'JKT-001', region: 'REGIONAL I', manager: 'Budi Santoso' },
+  { id: 'br-2', name: 'JAKARTA SELATAN', code: 'JKT-002', region: 'REGIONAL I', manager: 'Siti Nurhaliza' },
+  { id: 'br-3', name: 'TANGERANG', code: 'TNG-001', region: 'REGIONAL I', manager: 'Ahmad Wijaya' },
+  { id: 'br-4', name: 'BANDUNG DAGO', code: 'BDG-001', region: 'REGIONAL II', manager: 'Rina Kusuma' },
+  { id: 'br-5', name: 'BANDUNG KOPO', code: 'BDG-002', region: 'REGIONAL II', manager: 'Dedi Kurniawan' },
+  { id: 'br-6', name: 'SURABAYA TUNJUNGAN', code: 'SBY-001', region: 'REGIONAL III', manager: 'Eko Prasetyo' },
+  { id: 'br-7', name: 'SURABAYA DARMO', code: 'SBY-002', region: 'REGIONAL III', manager: 'Fitri Handayani' },
+  { id: 'br-8', name: 'MEDAN PLAZA', code: 'MDN-001', region: 'REGIONAL IV', manager: 'Hendra Wijaya' },
+  { id: 'br-9', name: 'PALEMBANG', code: 'PLM-001', region: 'REGIONAL V', manager: 'Indah Permata' },
+  { id: 'br-10', name: 'MAKASSAR', code: 'MKS-001', region: 'REGIONAL VI', manager: 'Joko Susilo' },
+  { id: 'br-11', name: 'DENPASAR', code: 'DPS-001', region: 'REGIONAL VII', manager: 'Kartika Dewi' },
+];
+
+const regions = ['REGIONAL I', 'REGIONAL II', 'REGIONAL III', 'REGIONAL IV', 'REGIONAL V', 'REGIONAL VI', 'REGIONAL VII'];
+
 export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }: ScoreboardProps) {
   const [selectedPeriod, setSelectedPeriod] = useState('2025');
   const [selectedMonth, setSelectedMonth] = useState('Jun-25');
   const [selectedDate, setSelectedDate] = useState(new Date('2025-06-20'));
+  const [selectedRegion, setSelectedRegion] = useState<string>('all');
+  const [selectedBranch, setSelectedBranch] = useState<string>('all');
+
+  // Filter branches by selected region
+  const filteredBranches = useMemo(() => {
+    if (selectedRegion === 'all') return branches;
+    return branches.filter(b => b.region === selectedRegion);
+  }, [selectedRegion]);
+
+  // Get selected branch data
+  const branchData = useMemo(() => {
+    if (selectedBranch === 'all') return null;
+    return branches.find(b => b.id === selectedBranch) || null;
+  }, [selectedBranch]);
+
+  // Calculate totals based on selection
+  const totals = useMemo(() => {
+    if (selectedBranch !== 'all' && selectedBranch) {
+      // Single branch selected
+      return {
+        regional: 1,
+        branch: 1,
+        subBranches: 12
+      };
+    } else if (selectedRegion !== 'all' && selectedRegion) {
+      // Region selected
+      const branchesInRegion = branches.filter(b => b.region === selectedRegion).length;
+      return {
+        regional: 1,
+        branch: branchesInRegion,
+        subBranches: branchesInRegion * 12
+      };
+    } else {
+      // All selected
+      return {
+        regional: 7,
+        branch: 46,
+        subBranches: 172
+      };
+    }
+  }, [selectedRegion, selectedBranch]);
+
+  // Get KPI Performance Data
+  const kpiPerformance = useMemo(() => {
+    try {
+      if (selectedBranch && selectedBranch !== 'all' && performanceData[selectedBranch]) {
+        return performanceData[selectedBranch];
+      } else if (selectedRegion && selectedRegion !== 'all' && performanceData[selectedRegion]) {
+        return performanceData[selectedRegion];
+      } else {
+        return performanceData['all'];
+      }
+    } catch (error) {
+      console.error('Error getting performance data:', error);
+      return performanceData['all'];
+    }
+  }, [selectedRegion, selectedBranch]);
 
   return (
     <div className="h-full overflow-auto bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -77,31 +160,76 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                   <h2 className="text-sm">GENERAL INFORMATION</h2>
                 </div>
                 <div className="space-y-2 text-sm">
-                  {/* Row 1: 2 fields */}
-                  <div className="grid grid-cols-2 gap-6">
+                  {/* Row 1: Region & Branch Selectors + Branch Manager */}
+                  <div className="grid grid-cols-[1fr_1fr_1fr] gap-4">
+                    {/* Region Selector */}
                     <div className="flex items-center gap-2">
-                      <label className="text-gray-700 whitespace-nowrap w-32">TOTAL BRANCH:</label>
-                      <input type="text" value="TOTAL BRANCH" readOnly className="flex-1 px-3 py-1 border border-gray-300 rounded bg-white text-gray-900" />
+                      <label className="text-gray-700 whitespace-nowrap w-28">REGION:</label>
+                      <select
+                        value={selectedRegion}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSelectedRegion(value);
+                          setSelectedBranch('all');
+                        }}
+                        className="flex-1 px-3 py-1 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="all">All</option>
+                        {regions.map((region) => (
+                          <option key={region} value={region}>{region}</option>
+                        ))}
+                      </select>
                     </div>
+
+                    {/* Branch Selector */}
                     <div className="flex items-center gap-2">
-                      <label className="text-gray-700 whitespace-nowrap w-32">BRANCH MANAGER:</label>
-                      <input type="text" value="" readOnly className="flex-1 px-3 py-1 border border-gray-300 rounded bg-white text-gray-900" />
+                      <label className="text-gray-700 whitespace-nowrap w-28">BRANCH:</label>
+                      <select
+                        value={selectedBranch}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSelectedBranch(value);
+                        }}
+                        className="flex-1 px-3 py-1 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        disabled={selectedRegion === 'all'}
+                      >
+                        <option value="all">All</option>
+                        {filteredBranches.map((branch) => (
+                          <option key={branch.id} value={branch.id}>{branch.name}</option>
+                        ))}
+                      </select>
                     </div>
+
+                    {/* Branch Manager - Auto Display */}
+                    {branchData && (
+                      <div className="flex items-center gap-2">
+                        <label className="text-gray-700 whitespace-nowrap w-32">BRANCH MANAGER:</label>
+                        <div className="flex-1 px-3 py-1 bg-blue-50 border border-blue-200 rounded text-gray-900">
+                          {branchData.manager}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   
-                  {/* Row 2: 3 fields */}
+                  {/* Row 2: 3 calculated fields - Read Only */}
                   <div className="grid grid-cols-3 gap-4">
                     <div className="flex items-center gap-2">
                       <label className="text-gray-700 whitespace-nowrap">TOTAL REGIONAL:</label>
-                      <input type="text" value="7" readOnly className="px-3 py-1 border border-gray-300 rounded bg-white text-gray-900 w-16 text-center" />
+                      <div className="px-3 py-1 bg-gray-100 border border-gray-300 rounded text-gray-700 w-16 text-center">
+                        {totals.regional}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <label className="text-gray-700 whitespace-nowrap">TOTAL BRANCH:</label>
-                      <input type="text" value="46" readOnly className="px-3 py-1 border border-gray-300 rounded bg-white text-gray-900 w-16 text-center" />
+                      <div className="px-3 py-1 bg-gray-100 border border-gray-300 rounded text-gray-700 w-16 text-center">
+                        {totals.branch}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <label className="text-gray-700 whitespace-nowrap">TOTAL SUB-BRANCHES:</label>
-                      <input type="text" value="172" readOnly className="px-3 py-1 border border-gray-300 rounded bg-white text-gray-900 w-16 text-center" />
+                      <div className="px-3 py-1 bg-gray-100 border border-gray-300 rounded text-gray-700 w-16 text-center">
+                        {totals.subBranches}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -123,15 +251,15 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                 <div className="flex flex-col gap-1 text-xs">
                   <div className="flex items-baseline gap-2">
                     <span className="text-gray-600">Rating KPI</span>
-                    <span className="text-xl text-blue-600">A+</span>
+                    <span className="text-xl text-blue-600">{kpiPerformance.rating}</span>
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-gray-600">Score KPI</span>
-                    <span className="text-lg text-gray-900">13.51</span>
+                    <span className="text-lg text-gray-900">{kpiPerformance.score}</span>
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-gray-600">Rank Position</span>
-                    <span className="text-gray-900">5</span>
+                    <span className="text-gray-900">{kpiPerformance.rank}</span>
                   </div>
                 </div>
               </div>
@@ -176,10 +304,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">31-May-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">50</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">14,196 CBP</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">22,932 CBP</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">61.91%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">25.79</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.newCASA.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.newCASA.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">{kpiPerformance.newCASA.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.newCASA.score}</td>
                   </tr>
                   <tr className="bg-gray-50 hover:bg-gray-100">
                     <td className="border border-gray-300 px-2 py-2">Number of Priority Customer</td>
@@ -187,10 +315,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">31-May-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">50</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">6,596 CBP</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">7,319 CBP</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">90.13%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">45.06</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.priorityCustomer.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.priorityCustomer.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">{kpiPerformance.priorityCustomer.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.priorityCustomer.score}</td>
                   </tr>
                   <tr className="bg-white hover:bg-gray-50">
                     <td className="border border-gray-300 px-2 py-2">New Cooperation (Payroll/Others)</td>
@@ -198,10 +326,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">31-May-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">50</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">45 point</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">1,602 point</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-red-100">2.81%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">1.40</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.newCooperation.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.newCooperation.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-red-100">{kpiPerformance.newCooperation.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.newCooperation.score}</td>
                   </tr>
 
                   {/* Financial Section */}
@@ -214,10 +342,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">17-Apr-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">112.5</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">3.33 %</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">2.56 %</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">130.05%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">70.02</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.nim.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.nim.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">{kpiPerformance.nim.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.nim.score}</td>
                   </tr>
                   <tr className="bg-gray-50 hover:bg-gray-100">
                     <td className="border border-gray-300 px-2 py-2">Normal Loan</td>
@@ -225,10 +353,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">31-May-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">300</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">300</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">38,556.524 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">14,699.178 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">177.32%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">300.00</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.normalLoan.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.normalLoan.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">{kpiPerformance.normalLoan.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.normalLoan.score}</td>
                   </tr>
                   <tr className="bg-white hover:bg-gray-50">
                     <td className="border border-gray-300 px-2 py-2">Time Deposit</td>
@@ -236,10 +364,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">20-Jun-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">100</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">150</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">14,948.602 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">16,303.915 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">91.65%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">102.56</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.timeDeposit.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.timeDeposit.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">{kpiPerformance.timeDeposit.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.timeDeposit.score}</td>
                   </tr>
                   <tr className="bg-gray-50 hover:bg-gray-100">
                     <td className="border border-gray-300 px-2 py-2">CASA Increase</td>
@@ -247,10 +375,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">20-Jun-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">150</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">225</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">5,315.033 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">11,085.941 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-red-100">47.94%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">71.90</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.casaIncrease.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.casaIncrease.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-red-100">{kpiPerformance.casaIncrease.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.casaIncrease.score}</td>
                   </tr>
                   <tr className="bg-white hover:bg-gray-50">
                     <td className="border border-gray-300 px-2 py-2">Fee Based Income (WM)</td>
@@ -258,10 +386,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">17-Apr-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">112.5</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">7,457 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">10,500 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">71.02%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">53.27</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.feeWM.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.feeWM.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">{kpiPerformance.feeWM.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.feeWM.score}</td>
                   </tr>
                   <tr className="bg-gray-50 hover:bg-gray-100">
                     <td className="border border-gray-300 px-2 py-2">Fee Based Income (Non WM)</td>
@@ -269,10 +397,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">17-Apr-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">50</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">72,847 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">76,108 Mn</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">95.72%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">48.36</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.feeNonWM.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.feeNonWM.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">{kpiPerformance.feeNonWM.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.feeNonWM.score}</td>
                   </tr>
                   <tr className="bg-white hover:bg-gray-50">
                     <td className="border border-gray-300 px-2 py-2">CoB2 Management</td>
@@ -280,10 +408,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">30-Apr-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">50</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">-</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">-</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">100.00%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">50.00</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.cobManagement.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.cobManagement.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">{kpiPerformance.cobManagement.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.cobManagement.score}</td>
                   </tr>
                   <tr className="bg-gray-50 hover:bg-gray-100">
                     <td className="border border-gray-300 px-2 py-2">Strategic Campaign*</td>
@@ -291,10 +419,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">30-Apr-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">50</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">-</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">-</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">102.87%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">51.86</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.strategicCampaign.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.strategicCampaign.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">{kpiPerformance.strategicCampaign.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.strategicCampaign.score}</td>
                   </tr>
 
                   {/* Learning & Leadership Section */}
@@ -307,16 +435,16 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">30-Apr-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">50</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">43.42 %</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">75.00 %</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">57.89%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">28.95</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.salesProductivity.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.salesProductivity.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-yellow-100">{kpiPerformance.salesProductivity.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.salesProductivity.score}</td>
                   </tr>
 
                   {/* Total Score (3) */}
                   <tr className="bg-blue-100">
                     <td colSpan={8} className="border border-gray-400 px-2 py-2 text-right">Total Score (3)</td>
-                    <td className="border border-gray-400 px-2 py-2 text-right">1,001.17</td>
+                    <td className="border border-gray-400 px-2 py-2 text-right">{kpiPerformance.totalScore3}</td>
                   </tr>
 
                   {/* Additional Point Section */}
@@ -329,10 +457,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">30-Apr-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">50</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">75</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">-</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">-</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">108.10%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">54.05</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.nplReduction.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.nplReduction.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">{kpiPerformance.nplReduction.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.nplReduction.score}</td>
                   </tr>
                   <tr className="bg-gray-50 hover:bg-gray-100">
                     <td className="border border-gray-300 px-2 py-2">Cross Selling Point</td>
@@ -340,10 +468,10 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">31-May-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">100</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">150</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">30,520 point</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">23,940 point</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">127.50%</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">127.50</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.crossSelling.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.crossSelling.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right bg-green-100">{kpiPerformance.crossSelling.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.crossSelling.score}</td>
                   </tr>
                   <tr className="bg-white hover:bg-gray-50">
                     <td className="border border-gray-300 px-2 py-2">Special Booster*</td>
@@ -351,16 +479,16 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                     <td className="border border-gray-300 px-2 py-2 text-center">31-May-25</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">100</td>
                     <td className="border border-gray-300 px-2 py-2 text-center">150</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">-</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">-</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">-</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right">0.00</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.specialBooster.actual}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.specialBooster.target}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.specialBooster.achievement}</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right">{kpiPerformance.specialBooster.score}</td>
                   </tr>
 
                   {/* Total Score (3.2) */}
                   <tr className="bg-blue-100">
                     <td colSpan={8} className="border border-gray-400 px-2 py-2 text-right">Total Score (3.2)</td>
-                    <td className="border border-gray-400 px-2 py-2 text-right">181.55</td>
+                    <td className="border border-gray-400 px-2 py-2 text-right">{kpiPerformance.totalScore32}</td>
                   </tr>
 
                   {/* Compliance & Fraud Section */}
@@ -393,13 +521,13 @@ export function Scoreboard({ unreadNotificationsCount = 0, onNotificationClick }
                   {/* Total Score (3.3) */}
                   <tr className="bg-blue-100">
                     <td colSpan={8} className="border border-gray-400 px-2 py-2 text-right">Total Score (3.3)</td>
-                    <td className="border border-gray-400 px-2 py-2 text-right">-</td>
+                    <td className="border border-gray-400 px-2 py-2 text-right">{kpiPerformance.totalScore33}</td>
                   </tr>
 
                   {/* Final Total Score */}
                   <tr className="bg-blue-200">
                     <td colSpan={8} className="border border-gray-400 px-2 py-2 text-right">Total Score (3.1) + (3.2) + (-) (3.3)</td>
-                    <td className="border border-gray-400 px-2 py-2 text-right">13.51</td>
+                    <td className="border border-gray-400 px-2 py-2 text-right">{kpiPerformance.finalTotal}</td>
                   </tr>
                 </tbody>
               </table>

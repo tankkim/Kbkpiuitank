@@ -38,101 +38,101 @@ export function SummaryTab({
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* KPI Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div className="max-w-7xl mx-auto space-y-4">
+      {/* KPI Stats - Compact */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Points</p>
-              <p className="text-2xl mt-1 text-blue-600">{totalPoints.toLocaleString()}</p>
+              <p className="text-xs text-gray-600">Total Points</p>
+              <p className="text-xl mt-0.5 text-blue-600">{totalPoints.toLocaleString()}</p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-blue-600" />
+            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-blue-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Achievement</p>
-              <p className="text-2xl mt-1 text-green-600">{currentMonthData.achievement}%</p>
+              <p className="text-xs text-gray-600">Achievement</p>
+              <p className="text-xl mt-0.5 text-green-600">{currentMonthData.achievement}%</p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-              <Award className="w-6 h-6 text-green-600" />
+            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+              <Award className="w-5 h-5 text-green-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Branch Rank</p>
-              <p className="text-2xl mt-1 text-orange-600">#{personalRankings[0].rank}</p>
+              <p className="text-xs text-gray-600">Bankwide Rank</p>
+              <p className="text-xl mt-0.5 text-orange-600">#{personalRankings[0].rank}</p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center">
-              <Trophy className="w-6 h-6 text-orange-600" />
+            <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+              <Trophy className="w-5 h-5 text-orange-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Products Sold</p>
-              <p className="text-2xl mt-1 text-purple-600">
+              <p className="text-xs text-gray-600">Products Sold</p>
+              <p className="text-xl mt-0.5 text-purple-600">
                 {topCrossSellingProducts.reduce((sum, p) => sum + p.count, 0)}
               </p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-              <Trophy className="w-6 h-6 text-purple-600" />
+            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+              <Trophy className="w-5 h-5 text-purple-600" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* 16 KPI Detailed Performance Table with Comments - MOVED TO TOP */}
-      <div className="bg-white rounded-xl shadow-lg border-2 border-purple-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2.5 flex items-center justify-between">
+      {/* 16 KPI Detailed Performance Table with Comments - Compact */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-700 text-white px-4 py-2 flex items-center justify-between">
           <div>
-            <h3 className="text-base">📊 Detailed KPI Performance - December 2025</h3>
-            <p className="text-[10px] opacity-90 mt-0.5">Click on any KPI to view supervisor comments and provide updates</p>
+            <h3 className="text-sm">📊 Detailed KPI Performance - December 2025</h3>
+            <p className="text-[9px] opacity-90 mt-0.5">Click on any KPI to view supervisor comments and provide updates</p>
           </div>
-          <div className="text-right bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-sm">
-            <p className="text-[10px] opacity-90">Overall</p>
-            <p className="text-xl">{overallPerf.overallAchievement}%</p>
+          <div className="text-right bg-white/10 px-2.5 py-1 rounded-lg backdrop-blur-sm">
+            <p className="text-[9px] opacity-90">Overall</p>
+            <p className="text-base">{overallPerf.overallAchievement}%</p>
           </div>
         </div>
         
-        <div className="px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-200 grid grid-cols-4 gap-2 text-center">
-          <div className="bg-white rounded p-1.5 shadow-sm">
-            <p className="text-[10px] text-gray-600">Excellent</p>
-            <p className="text-base text-green-600">{overallPerf.excellentCount}</p>
+        <div className="px-3 py-1.5 bg-gray-100 border-b border-gray-200 grid grid-cols-4 gap-2 text-center">
+          <div className="bg-white rounded p-1 shadow-sm">
+            <p className="text-[9px] text-gray-600">Excellent</p>
+            <p className="text-sm text-green-600">{overallPerf.excellentCount}</p>
           </div>
-          <div className="bg-white rounded p-1.5 shadow-sm">
-            <p className="text-[10px] text-gray-600">Good</p>
-            <p className="text-base text-blue-600">{overallPerf.goodCount}</p>
+          <div className="bg-white rounded p-1 shadow-sm">
+            <p className="text-[9px] text-gray-600">Good</p>
+            <p className="text-sm text-blue-600">{overallPerf.goodCount}</p>
           </div>
-          <div className="bg-white rounded p-1.5 shadow-sm">
-            <p className="text-[10px] text-gray-600">Warning</p>
-            <p className="text-base text-yellow-600">{overallPerf.warningCount}</p>
+          <div className="bg-white rounded p-1 shadow-sm">
+            <p className="text-[9px] text-gray-600">Warning</p>
+            <p className="text-sm text-yellow-600">{overallPerf.warningCount}</p>
           </div>
-          <div className="bg-white rounded p-1.5 shadow-sm">
-            <p className="text-[10px] text-gray-600">Critical</p>
-            <p className="text-base text-red-600">{overallPerf.criticalCount}</p>
+          <div className="bg-white rounded p-1 shadow-sm">
+            <p className="text-[9px] text-gray-600">Critical</p>
+            <p className="text-sm text-red-600">{overallPerf.criticalCount}</p>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full text-[10px]">
             <thead className="bg-gray-700 text-white">
               <tr>
-                <th className="px-3 py-2 text-left">KPI Metric</th>
-                <th className="px-3 py-2 text-left">Category</th>
-                <th className="px-3 py-2 text-center">Actual</th>
-                <th className="px-3 py-2 text-center">Target</th>
-                <th className="px-3 py-2 text-center">Achievement</th>
-                <th className="px-3 py-2 text-center">Points</th>
-                <th className="px-3 py-2 text-center">Status</th>
-                <th className="px-3 py-2 text-center">Comments</th>
+                <th className="px-2 py-1.5 text-left">KPI Metric</th>
+                <th className="px-2 py-1.5 text-left">Category</th>
+                <th className="px-2 py-1.5 text-center">Actual</th>
+                <th className="px-2 py-1.5 text-center">Target</th>
+                <th className="px-2 py-1.5 text-center">Achievement</th>
+                <th className="px-2 py-1.5 text-center">Points</th>
+                <th className="px-2 py-1.5 text-center">Status</th>
+                <th className="px-2 py-1.5 text-center">Comments</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -148,20 +148,20 @@ export function SummaryTab({
                     }`}
                     onClick={() => onKPIClick(kpi.kpiName)}
                   >
-                    <td className="px-3 py-1.5 text-gray-900">
+                    <td className="px-2 py-1.5 text-gray-900">
                       <div className="flex items-center gap-1.5">
                         {getStatusIcon(kpi.status)}
                         <span className="text-xs">{kpi.kpiName}</span>
                       </div>
                     </td>
-                    <td className="px-3 py-1.5 text-gray-600 text-[10px]">{kpi.category}</td>
-                    <td className="px-3 py-1.5 text-center text-gray-900 text-xs">
+                    <td className="px-2 py-1.5 text-gray-600 text-[10px]">{kpi.category}</td>
+                    <td className="px-2 py-1.5 text-center text-gray-900 text-xs">
                       {kpi.actual.toLocaleString()} {kpi.unit}
                     </td>
-                    <td className="px-3 py-1.5 text-center text-gray-600 text-xs">
+                    <td className="px-2 py-1.5 text-center text-gray-600 text-xs">
                       {kpi.target.toLocaleString()} {kpi.unit}
                     </td>
-                    <td className="px-3 py-1.5 text-center">
+                    <td className="px-2 py-1.5 text-center">
                       <span className={`px-1.5 py-0.5 rounded text-[10px] ${
                         kpi.status === 'excellent' ? 'bg-green-100 text-green-700' :
                         kpi.status === 'good' ? 'bg-blue-100 text-blue-700' :
@@ -171,10 +171,10 @@ export function SummaryTab({
                         {kpi.achievement}%
                       </span>
                     </td>
-                    <td className="px-3 py-1.5 text-center text-gray-900 text-xs">
+                    <td className="px-2 py-1.5 text-center text-gray-900 text-xs">
                       {kpi.points} / {kpi.maxPoints}
                     </td>
-                    <td className="px-3 py-1.5 text-center">
+                    <td className="px-2 py-1.5 text-center">
                       <span className={`px-1.5 py-0.5 rounded text-[10px] uppercase ${
                         kpi.status === 'excellent' ? 'bg-green-200 text-green-800' :
                         kpi.status === 'good' ? 'bg-blue-200 text-blue-800' :
@@ -184,7 +184,7 @@ export function SummaryTab({
                         {kpi.status}
                       </span>
                     </td>
-                    <td className="px-3 py-1.5 text-center">
+                    <td className="px-2 py-1.5 text-center">
                       <button 
                         className="relative flex items-center justify-center gap-1 text-gray-600 hover:text-blue-600 transition-colors mx-auto"
                         onClick={(e) => {
@@ -273,27 +273,27 @@ export function SummaryTab({
         </div>
       </div>
 
-      {/* Cross-Selling Sales History */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3">
-          <h3 className="text-lg">This Month&apos;s Active Cross Selling Sales</h3>
+      {/* Cross-Selling Sales History - Compact */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-700 text-white px-4 py-2">
+          <h3 className="text-sm">This Month&apos;s Active Cross Selling Sales</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs">
             <thead className="bg-gray-700 text-white">
               <tr>
-                <th className="px-4 py-3 text-left"># Cross Selling</th>
-                <th className="px-4 py-3 text-center">Total Active Cross-Selling Sales</th>
-                <th className="px-4 py-3 text-center">Jan</th>
-                <th className="px-4 py-3 text-center">Feb</th>
-                <th className="px-4 py-3 text-center">Mar</th>
-                <th className="px-4 py-3 text-center">Apr</th>
-                <th className="px-4 py-3 text-center">May</th>
-                <th className="px-4 py-3 text-center">Jun</th>
-                <th className="px-4 py-3 text-center">Jul</th>
-                <th className="px-4 py-3 text-center">Aug</th>
-                <th className="px-4 py-3 text-center">Sep</th>
-                <th className="px-4 py-3 text-center">Oct</th>
+                <th className="px-3 py-2 text-left"># Cross Selling</th>
+                <th className="px-3 py-2 text-center">Total Active Cross-Selling Sales</th>
+                <th className="px-3 py-2 text-center">Jan</th>
+                <th className="px-3 py-2 text-center">Feb</th>
+                <th className="px-3 py-2 text-center">Mar</th>
+                <th className="px-3 py-2 text-center">Apr</th>
+                <th className="px-3 py-2 text-center">May</th>
+                <th className="px-3 py-2 text-center">Jun</th>
+                <th className="px-3 py-2 text-center">Jul</th>
+                <th className="px-3 py-2 text-center">Aug</th>
+                <th className="px-3 py-2 text-center">Sep</th>
+                <th className="px-3 py-2 text-center">Oct</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -301,18 +301,18 @@ export function SummaryTab({
                 const total = history.jan + history.feb + history.mar + history.apr + history.may + history.jun + history.jul + history.aug + history.sep + history.oct;
                 return (
                   <tr key={index} className="hover:bg-blue-50 transition-colors">
-                    <td className="px-4 py-3 text-gray-900">{history.productCombination}</td>
-                    <td className="px-4 py-3 text-center text-gray-900">{total}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{history.jan}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{history.feb}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{history.mar}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{history.apr}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{history.may}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{history.jun}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{history.jul}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{history.aug}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{history.sep}</td>
-                    <td className="px-4 py-3 text-center text-gray-600 bg-blue-50">{history.oct}</td>
+                    <td className="px-3 py-2 text-gray-900">{history.productCombination}</td>
+                    <td className="px-3 py-2 text-center text-gray-900">{total}</td>
+                    <td className="px-3 py-2 text-center text-gray-600">{history.jan}</td>
+                    <td className="px-3 py-2 text-center text-gray-600">{history.feb}</td>
+                    <td className="px-3 py-2 text-center text-gray-600">{history.mar}</td>
+                    <td className="px-3 py-2 text-center text-gray-600">{history.apr}</td>
+                    <td className="px-3 py-2 text-center text-gray-600">{history.may}</td>
+                    <td className="px-3 py-2 text-center text-gray-600">{history.jun}</td>
+                    <td className="px-3 py-2 text-center text-gray-600">{history.jul}</td>
+                    <td className="px-3 py-2 text-center text-gray-600">{history.aug}</td>
+                    <td className="px-3 py-2 text-center text-gray-600">{history.sep}</td>
+                    <td className="px-3 py-2 text-center text-gray-600 bg-blue-50">{history.oct}</td>
                   </tr>
                 );
               })}

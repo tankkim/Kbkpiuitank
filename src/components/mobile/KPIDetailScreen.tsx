@@ -19,7 +19,9 @@ interface KPIDetailScreenProps {
 
 export function KPIDetailScreen({ kpiName, kpiData, onBack }: KPIDetailScreenProps) {
   const [replyText, setReplyText] = useState('');
-  const comments = getCommentsForKPI(kpiName);
+  const [comments, setComments] = useState(getCommentsForKPI(kpiName));
+  const [isSending, setIsSending] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const getTimeAgo = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -34,8 +36,38 @@ export function KPIDetailScreen({ kpiName, kpiData, onBack }: KPIDetailScreenPro
 
   const handleSendReply = () => {
     if (replyText.trim()) {
-      console.log('Sending reply:', replyText);
-      setReplyText('');
+      setIsSending(true);
+      setTimeout(() => {
+        // Add new comment to the list
+        const newComment = {
+          id: `comment-${Date.now()}`,
+          fromUserId: currentEmployee.nip,
+          fromUserName: currentEmployee.name,
+          fromUserRole: currentEmployee.position,
+          toUserId: currentEmployee.nip,
+          toUserName: currentEmployee.name,
+          kpiName: kpiName,
+          message: replyText,
+          type: 'comment' as const,
+          timestamp: new Date().toISOString(),
+          isRead: true
+        };
+        
+        setComments([...comments, newComment]);
+        setReplyText('');
+        setIsSending(false);
+        setShowSuccess(true);
+        
+        // Auto-scroll to bottom to show new comment
+        setTimeout(() => {
+          const commentsContainer = document.querySelector('.max-h-72.overflow-y-auto');
+          if (commentsContainer) {
+            commentsContainer.scrollTop = commentsContainer.scrollHeight;
+          }
+        }, 100);
+        
+        setTimeout(() => setShowSuccess(false), 2000);
+      }, 1000);
     }
   };
 
@@ -168,12 +200,12 @@ export function KPIDetailScreen({ kpiName, kpiData, onBack }: KPIDetailScreenPro
                 <p className="text-[10px]">No comments yet</p>
               </div>
             ) : (
-              comments.map((comment) => (
+              comments.map((comment, index) => (
                 <div
                   key={comment.id}
-                  className={`p-2 rounded border ${
+                  className={`p-2 rounded border transition-all duration-300 ${
                     !comment.isRead ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
-                  }`}
+                  } ${index === comments.length - 1 && isSending === false && comment.id.includes(Date.now().toString().slice(0, -3)) ? 'animate-slideInUp border-green-400' : ''}`}
                 >
                   <div className="flex items-start gap-1.5">
                     <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-[9px] flex-shrink-0 font-medium">
@@ -225,12 +257,22 @@ export function KPIDetailScreen({ kpiName, kpiData, onBack }: KPIDetailScreenPro
               />
               <button
                 onClick={handleSendReply}
-                disabled={!replyText.trim()}
+                disabled={!replyText.trim() || isSending}
                 className="px-2.5 py-1 bg-blue-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
               >
-                <Send className="w-3 h-3" />
+                {isSending ? (
+                  <svg className="w-3 h-3 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.928l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <Send className="w-3 h-3" />
+                )}
               </button>
             </div>
+            {showSuccess && (
+              <div className="mt-1 text-[9px] text-green-600">Reply sent successfully!</div>
+            )}
           </div>
         </div>
       </div>

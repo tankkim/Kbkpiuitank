@@ -4,42 +4,36 @@ export function MainIndicatorsCharts() {
   const mainIndicators = [
     { 
       name: 'Normal Loan', 
-      value: 72.21, 
-      color: '#ef4444',
-      subtitle: 'This Indicator need to be more weight'
+      value: 177.32, 
+      color: '#1e3a5f'
     },
     { 
-      name: 'Case Increase', 
-      value: 122.39, 
-      color: '#3b82f6',
-      subtitle: ''
+      name: 'Casa Increase', 
+      value: 652.29, 
+      color: '#f97316'
     },
     { 
-      name: 'Other Deposit', 
-      value: 48.67, 
-      color: '#f97316',
-      subtitle: ''
+      name: 'Time Deposit', 
+      value: 102.54, 
+      color: '#94a3b8'
     },
   ];
 
   const lowestIndicators = [
     { 
       name: 'Sales Productivity', 
-      value: 77.89, 
-      color: '#ef4444',
-      subtitle: 'This Indicator need to be more weight'
+      value: 57.89, 
+      color: '#1e3a5f'
     },
     { 
-      name: 'NTB/Digital Account', 
-      value: 91.08, 
-      color: '#3b82f6',
-      subtitle: 'Within Category (SA1)'
+      name: 'NTG/Digital Account', 
+      value: 51.98, 
+      color: '#f97316'
     },
     { 
-      name: 'MTC Score', 
-      value: 91.94, 
-      color: '#f97316',
-      subtitle: ''
+      name: 'New Cooperation', 
+      value: 2.81, 
+      color: '#94a3b8'
     },
   ];
 
@@ -70,9 +64,6 @@ export function MainIndicatorsCharts() {
         <div className="text-sm" style={{ color: item.color }}>
           {item.value}%
         </div>
-        {item.subtitle && (
-          <div className="text-xs text-gray-500 mt-1">{item.subtitle}</div>
-        )}
       </div>
     </div>
   );

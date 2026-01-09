@@ -587,7 +587,7 @@ export const crossSellingSalesHistory: CrossSellingSalesHistory[] = [
 
 // Personal rankings
 export const personalRankings: RankingData[] = [
-  { category: 'Branch Ranking', rank: 3, totalPerformers: 25, points: 1110 },
+  { category: 'Bankwide Ranking', rank: 3, totalPerformers: 25, points: 1110 },
   { category: 'Regional Ranking', rank: 12, totalPerformers: 156, points: 1110 },
   { category: 'Bank-wide Ranking', rank: 45, totalPerformers: 487, points: 1110 },
 ];

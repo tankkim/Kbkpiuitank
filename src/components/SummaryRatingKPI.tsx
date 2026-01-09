@@ -7,20 +7,20 @@ interface SummaryRatingKPIProps {
 export function SummaryRatingKPI({ selectedDate }: SummaryRatingKPIProps) {
   const regionData = [
     { region: 'A+', total: 2, ratio: '28.57%' },
-    { region: 'A', total: 5, ratio: '71.43%' },
-    { region: 'B', total: 0, ratio: '0.00%' },
+    { region: 'A', total: 3, ratio: '42.86%' },
+    { region: 'B', total: 1, ratio: '14.29%' },
     { region: 'C', total: 0, ratio: '0.00%' },
-    { region: 'D', total: 0, ratio: '0.00%' },
+    { region: 'D', total: 1, ratio: '14.29%' },
     { region: 'E', total: 0, ratio: '0.00%' },
   ];
 
   const branchData = [
-    { branch: 'A+', total: 19, ratio: '41.30%' },
-    { branch: 'A', total: 20, ratio: '43.48%' },
-    { branch: 'B', total: 7, ratio: '15.22%' },
-    { branch: 'C', total: 0, ratio: '0.00%' },
-    { branch: 'D', total: 0, ratio: '0.00%' },
-    { branch: 'E', total: 0, ratio: '0.00%' },
+    { branch: 'A+', total: 8, ratio: '17.39%' },
+    { branch: 'A', total: 16, ratio: '34.78%' },
+    { branch: 'B', total: 12, ratio: '26.09%' },
+    { branch: 'C', total: 6, ratio: '13.04%' },
+    { branch: 'D', total: 3, ratio: '6.52%' },
+    { branch: 'E', total: 1, ratio: '2.17%' },
   ];
 
   const regionTotal = regionData.reduce((sum, item) => sum + item.total, 0);
@@ -39,12 +39,6 @@ export function SummaryRatingKPI({ selectedDate }: SummaryRatingKPIProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="p-2 space-y-2">
-        {/* Date Display - Ultra Compact */}
-        <div className="flex flex-col gap-1 text-xs">
-          <span className="text-gray-600">Date</span>
-          <span className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-center">{selectedDate.toISOString().split('T')[0]}</span>
-        </div>
-
         {/* Summary Rating KPI Header */}
         <div className="bg-[#4a5f7f] text-white px-2 py-1.5">
           <h3 className="text-xs">SUMMARY RATING KPI</h3>

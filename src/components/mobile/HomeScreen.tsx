@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertTriangle, Target, CheckCircle, X, Send, TrendingDown, TrendingUp, Minus, ChevronDown, ChevronUp } from 'lucide-react';
+import { AlertTriangle, Target, CheckCircle, X, Send, TrendingDown, TrendingUp, Minus, ChevronDown, ChevronUp, Play, CheckSquare } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { MobileHeader } from './MobileHeader';
 import { currentEmployee } from '../../data/myPerformanceData';
@@ -15,9 +15,11 @@ interface HomeScreenProps {
 
 export function HomeScreen({ onNavigate, notificationCount, simulatedScore }: HomeScreenProps) {
   const overallPerf = calculateOverallPerformance(myDetailedKPIMetrics);
-  const [replyModalOpen, setReplyModalOpen] = useState(false);
-  const [selectedAlert, setSelectedAlert] = useState<any>(null);
   const [replyMessage, setReplyMessage] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [expandedAlertId, setExpandedAlertId] = useState<string | null>(null);
+  const [alertReplies, setAlertReplies] = useState<{ [key: string]: any[] }>({});
   const [expandedSections, setExpandedSections] = useState({
     urgent: false,
     action: false,
@@ -43,15 +45,39 @@ export function HomeScreen({ onNavigate, notificationCount, simulatedScore }: Ho
   };
 
   const handleAlertClick = (alert: any) => {
-    setSelectedAlert(alert);
-    setReplyModalOpen(true);
+    if (expandedAlertId === alert.id) {
+      setExpandedAlertId(null);
+      setReplyMessage('');
+    } else {
+      setExpandedAlertId(alert.id);
+      setReplyMessage('');
+    }
   };
 
-  const handleSendReply = () => {
+  const handleSendReply = (alertId: string) => {
     if (replyMessage.trim()) {
-      console.log('Sending reply:', replyMessage, 'to:', selectedAlert?.fromUserName);
-      setReplyMessage('');
-      setReplyModalOpen(false);
+      setIsSending(true);
+      setTimeout(() => {
+        // Add new reply to the list
+        const newReply = {
+          fromName: currentEmployee.name,
+          message: replyMessage,
+          timestamp: 'Just now'
+        };
+        
+        setAlertReplies(prev => ({
+          ...prev,
+          [alertId]: [...(prev[alertId] || []), newReply]
+        }));
+        
+        console.log('Sending reply:', replyMessage);
+        setReplyMessage('');
+        setIsSending(false);
+        setShowSuccess(true);
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 1500);
+      }, 1000);
     }
   };
 
@@ -170,64 +196,39 @@ export function HomeScreen({ onNavigate, notificationCount, simulatedScore }: Ho
           </div>
         </div>
 
-        {/* My Rankings */}
-        <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-gray-900 font-semibold">My Rankings</span>
-            <button 
-              onClick={() => onNavigate('performance')}
-              className="text-xs text-blue-600 font-medium hover:text-blue-700"
-            >
-              View All
-            </button>
-          </div>
-          
+        {/* Quick Access */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+          <h3 className="text-sm text-gray-900 font-semibold mb-3">Quick Access</h3>
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-blue-50 rounded-xl p-3 border border-blue-100">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <span className="text-sm text-white font-bold">1</span>
+            <button
+              onClick={() => onNavigate('videos')}
+              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 hover:shadow-md transition-all active:scale-95"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Play className="w-5 h-5 text-white" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[10px] text-gray-600">Branch</div>
-                  <div className="text-xs text-gray-900 font-semibold truncate">Jakarta Pusat</div>
-                </div>
-              </div>
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-gray-600">of 6 (Regional I)</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex items-center gap-0.5 text-green-600">
-                    <TrendingUp className="w-3 h-3" />
-                    <span className="font-semibold">0</span>
-                  </div>
-                  <span className="text-gray-400">•</span>
-                  <span className="text-gray-600 font-medium">12.08p</span>
+                <div className="text-left flex-1">
+                  <div className="text-sm font-semibold text-gray-900">Video Training</div>
+                  <div className="text-xs text-gray-600 mt-0.5">6 videos</div>
                 </div>
               </div>
-            </div>
+            </button>
 
-            <div className="bg-purple-50 rounded-xl p-3 border border-purple-100">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-9 h-9 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <span className="text-sm text-white font-bold">3</span>
+            <button
+              onClick={() => onNavigate('todos')}
+              className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200 hover:shadow-md transition-all active:scale-95"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CheckSquare className="w-5 h-5 text-white" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[10px] text-gray-600">Region</div>
-                  <div className="text-xs text-gray-900 font-semibold truncate">REGIONAL I</div>
-                </div>
-              </div>
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-gray-600">of 10</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex items-center gap-0.5 text-gray-500">
-                    <Minus className="w-3 h-3" />
-                    <span className="font-semibold">0</span>
-                  </div>
-                  <span className="text-gray-400">•</span>
-                  <span className="text-gray-600 font-medium">13.24p</span>
+                <div className="text-left flex-1">
+                  <div className="text-sm font-semibold text-gray-900">To-Do List</div>
+                  <div className="text-xs text-gray-600 mt-0.5">4 tasks today</div>
                 </div>
               </div>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -272,22 +273,87 @@ export function HomeScreen({ onNavigate, notificationCount, simulatedScore }: Ho
             {expandedSections.urgent && (
               <div className="p-3 space-y-2">
                 {urgentAlerts.slice(0, 3).map((alert) => (
-                  <button
-                    key={alert.id}
-                    onClick={() => handleAlertClick(alert)}
-                    className="w-full bg-gray-50 rounded-xl p-3 border border-gray-200 hover:border-red-300 hover:bg-red-50 transition-all text-left"
-                  >
-                    <div className="flex items-start gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px] font-semibold flex-shrink-0">
-                        {alert.fromUserName.split(' ').map(n => n[0]).join('')}
+                  <div key={alert.id}>
+                    <button
+                      onClick={() => handleAlertClick(alert)}
+                      className={`w-full bg-gray-50 rounded-xl p-3 border transition-all text-left ${
+                        expandedAlertId === alert.id ? 'border-blue-400 bg-blue-50' : 'border-gray-200 hover:border-red-300 hover:bg-red-50'
+                      }`}
+                    >
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px] font-semibold flex-shrink-0">
+                          {alert.fromUserName.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-gray-900 font-bold">{alert.fromUserName}</p>
+                          <p className="text-[11px] text-gray-700 line-clamp-2 mt-0.5">{alert.message}</p>
+                          <p className="text-[10px] text-gray-500 mt-1.5">{getTimeAgo(alert.timestamp)}</p>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-900 font-bold">{alert.fromUserName}</p>
-                        <p className="text-[11px] text-gray-700 line-clamp-2 mt-0.5">{alert.message}</p>
-                        <p className="text-[10px] text-gray-500 mt-1.5">{getTimeAgo(alert.timestamp)}</p>
+                    </button>
+                    
+                    {/* Inline Reply Section */}
+                    {expandedAlertId === alert.id && (
+                      <div className="mt-2 bg-white rounded-xl border border-blue-300 p-2.5 animate-slideInUp space-y-2">
+                        {/* Existing Replies */}
+                        {alertReplies[alert.id] && alertReplies[alert.id].length > 0 && (
+                          <div className="space-y-1.5 mb-2">
+                            {alertReplies[alert.id].map((reply, idx) => (
+                              <div key={idx} className="bg-blue-50 rounded-lg p-2 border border-blue-200">
+                                <div className="flex items-start gap-1.5">
+                                  <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[8px] flex-shrink-0">
+                                    {reply.fromName.split(' ').map(n => n[0]).join('')}
+                                  </div>
+                                  <div className="flex-1">
+                                    <p className="text-[9px] font-medium text-gray-900">{reply.fromName}</p>
+                                    <p className="text-[10px] text-gray-700 mt-0.5">{reply.message}</p>
+                                    <p className="text-[8px] text-gray-500 mt-0.5">{reply.timestamp}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {/* Input */}
+                        <div className="flex gap-1.5">
+                          <input
+                            type="text"
+                            placeholder="Write a reply..."
+                            value={replyMessage}
+                            onChange={(e) => setReplyMessage(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && !e.shiftKey && replyMessage.trim()) {
+                                e.preventDefault();
+                                handleSendReply(alert.id);
+                              }
+                            }}
+                            className="flex-1 px-2 py-1.5 bg-white border border-gray-300 rounded-lg text-[11px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                          <button
+                            onClick={() => handleSendReply(alert.id)}
+                            disabled={!replyMessage.trim() || isSending}
+                            className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
+                          >
+                            {isSending ? (
+                              <svg className="w-3.5 h-3.5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.928l3-2.647z"></path>
+                              </svg>
+                            ) : (
+                              <Send className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        </div>
+                        {showSuccess && (
+                          <div className="text-[10px] text-green-600 flex items-center gap-1">
+                            <CheckCircle className="w-3 h-3" />
+                            Reply sent successfully!
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </button>
+                    )}
+                  </div>
                 ))}
               </div>
             )}
@@ -426,60 +492,6 @@ export function HomeScreen({ onNavigate, notificationCount, simulatedScore }: Ho
           </div>
         )}
       </div>
-
-      {/* Reply Modal */}
-      {replyModalOpen && selectedAlert && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end">
-          <div className="w-full bg-white rounded-t-3xl shadow-2xl max-h-[80vh] overflow-hidden flex flex-col">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-4 flex items-center justify-between">
-              <div>
-                <h3 className="text-base font-semibold">Reply to {selectedAlert.fromUserName}</h3>
-                {selectedAlert.relatedMetric && (
-                  <p className="text-xs opacity-90 mt-1">Re: {selectedAlert.relatedMetric}</p>
-                )}
-              </div>
-              <button 
-                onClick={() => setReplyModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-4 bg-gray-50 border-b">
-              <p className="text-xs text-gray-600 mb-1 font-medium">Original message:</p>
-              <p className="text-sm text-gray-900">{selectedAlert.message}</p>
-              <p className="text-xs text-gray-500 mt-2">{getTimeAgo(selectedAlert.timestamp)}</p>
-            </div>
-
-            <div className="flex-1 p-4 overflow-y-auto">
-              <textarea
-                value={replyMessage}
-                onChange={(e) => setReplyMessage(e.target.value)}
-                placeholder="Type your reply..."
-                className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-
-            <div className="p-4 bg-gray-50 border-t flex gap-2">
-              <button
-                onClick={() => setReplyModalOpen(false)}
-                className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all text-sm font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSendReply}
-                disabled={!replyMessage.trim()}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-              >
-                <Send className="w-4 h-4" />
-                <span>Send</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

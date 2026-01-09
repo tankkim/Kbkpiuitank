@@ -4,29 +4,21 @@ export function AchievementOfScopeKPI() {
   const scopeData = [
     {
       title: 'Leadership & Learning',
-      targetKPI: '3 Jun 25',
-      totalBranch: '122',
-      achievement: 95.2,
+      achievement: 115.2,
       color: '#1e3a5f',
     },
     {
       title: 'Customer',
-      targetKPI: '3 Jun 25',
-      totalBranch: '122',
       achievement: 87.5,
       color: '#f97316',
     },
     {
       title: 'Financial',
-      targetKPI: '3 Jun 25',
-      totalBranch: '122',
       achievement: 112.3,
       color: '#94a3b8',
     },
     {
       title: 'Additional Financial',
-      targetKPI: '3 Jun 25',
-      totalBranch: '122',
       achievement: 78.9,
       color: '#60a5fa',
     },
@@ -82,15 +74,6 @@ export function AchievementOfScopeKPI() {
             </h4>
             
             <DonutChart achievement={item.achievement} color={item.color} />
-            
-            <div className="mt-4 space-y-1">
-              <div className="text-xs text-gray-600">
-                Target KPI: <span className="text-gray-900">{item.targetKPI}</span>
-              </div>
-              <div className="text-xs text-gray-600">
-                Total Branch: <span className="text-gray-900">{item.totalBranch}</span>
-              </div>
-            </div>
           </div>
         ))}
       </div>

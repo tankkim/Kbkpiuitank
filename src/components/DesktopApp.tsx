@@ -5,12 +5,19 @@ import { MyPerformance } from './MyPerformance';
 import { Scoreboard } from './Scoreboard';
 import { Achievement } from './Achievement';
 import { AllKPIResult } from './AllKPIResult';
+import { Reports } from './Reports';
 import { RegionComparison } from './RegionComparison';
 import { BranchComparison } from './BranchComparison';
+import { VideoTraining } from './VideoTraining';
+import { TodoList } from './TodoList';
 import { AdminDashboard } from './admin/AdminDashboard';
+import { OrganizationManagement } from './admin/OrganizationManagement';
 import { PositionManagement } from './admin/PositionManagement';
 import { KPIStructureManagement } from './admin/KPIStructureManagement';
 import { EmployeeManagement } from './admin/EmployeeManagement';
+import { VideoManagement } from './admin/VideoManagement';
+import { TodoManagement } from './admin/TodoManagement';
+import { TodoStatistics } from './admin/TodoStatistics';
 import { NotificationCenter } from './NotificationCenter';
 import { Calculator, X } from 'lucide-react';
 import { KPISimulator } from './KPISimulator';
@@ -46,6 +53,9 @@ export function DesktopApp() {
     if (activePage === 'Admin') {
       return <AdminDashboard onNavigate={handleAdminNavigate} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
     }
+    if (activePage === 'Admin:organization') {
+      return <OrganizationManagement onBack={handleAdminBack} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+    }
     if (activePage === 'Admin:positions') {
       return <PositionManagement onBack={handleAdminBack} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
     }
@@ -55,17 +65,30 @@ export function DesktopApp() {
     if (activePage === 'Admin:employees') {
       return <EmployeeManagement onBack={handleAdminBack} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
     }
+    if (activePage === 'Admin:videos') {
+      return <VideoManagement onBack={handleAdminBack} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+    }
+    if (activePage === 'Admin:todos') {
+      return <TodoManagement onBack={handleAdminBack} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+    }
+    if (activePage === 'Admin:todo-stats') {
+      return <TodoStatistics onBack={handleAdminBack} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+    }
 
     // Regular Pages
     switch (activePage) {
-      case 'Home': return <Home simulatedScore={simulatedScore} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+      case 'Home': return <Home simulatedScore={simulatedScore} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} onNavigate={setActivePage} />;
       case 'My Performance': return <MyPerformance unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+      case 'To-Do Statistics': return <TodoStatistics onBack={() => setActivePage('To-Do List')} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
       case 'Scorecard': return <Scoreboard unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
       case 'Achievement': return <Achievement unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
       case 'All KPI Result': return <AllKPIResult unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+      case 'Reports': return <Reports unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
       case 'Region Comparison': return <RegionComparison unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
       case 'Branch Comparison': return <BranchComparison unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
-      default: return <Home simulatedScore={simulatedScore} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+      case 'Video Training': return <VideoTraining unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+      case 'To-Do List': return <TodoList unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+      default: return <Home simulatedScore={simulatedScore} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} onNavigate={setActivePage} />;
     }
   };
 

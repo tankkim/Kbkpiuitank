@@ -6,6 +6,8 @@ import { NotificationsScreen } from './mobile/NotificationsScreen';
 import { SimulatorScreen } from './mobile/SimulatorScreen';
 import { ProfileScreen } from './mobile/ProfileScreen';
 import { RankingsScreen } from './mobile/RankingsScreen';
+import { VideoScreen } from './mobile/VideoScreen';
+import { TodoScreen } from './mobile/TodoScreen';
 import { BottomNav } from './mobile/BottomNav';
 import { myDetailedKPIMetrics } from '../data/individualKPIData';
 import { myComments } from '../data/communicationData';
@@ -91,6 +93,14 @@ export function MobileApp() {
           <ProfileScreen 
             onBack={() => handleNavigate('home')}
           />
+        )}
+
+        {activeScreen === 'videos' && (
+          <VideoScreen onBack={() => handleNavigate('home')} />
+        )}
+
+        {activeScreen === 'todos' && (
+          <TodoScreen onBack={() => handleNavigate('home')} />
         )}
       </div>
 

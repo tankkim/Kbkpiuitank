@@ -1,4 +1,4 @@
-import { Users, Briefcase, TrendingUp, Settings, Building2, ChevronRight, MapPin, Play, CheckSquare, BarChart3 } from 'lucide-react';
+import { Users, Briefcase, TrendingUp, Settings, Building2, ChevronRight, MapPin, Play, CheckSquare, BarChart3, Eye } from 'lucide-react';
 import { PageHeader } from '../PageHeader';
 
 interface AdminDashboardProps {

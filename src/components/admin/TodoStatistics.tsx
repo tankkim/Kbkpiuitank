@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Bell, TrendingUp, Users, CheckCircle, Building2, ChevronRight, ChevronDown, User, X, Calendar, Circle } from 'lucide-react';
+import { Bell, TrendingUp, Users, CheckCircle, Building2, ChevronRight, ChevronDown, User, X, Calendar, Circle } from 'lucide-react';
 import { todoStatistics, type TodoStatistics as TodoStat } from '../../data/todoData';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
@@ -269,17 +269,9 @@ export function TodoStatistics({ onBack, unreadNotificationsCount, onNotificatio
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={onBack}
-                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <div>
-                <h1 className="text-lg">To-Do Completion Statistics</h1>
-                <p className="text-xs text-gray-500">Track completion rates by branch, team, and individual</p>
-              </div>
+            <div>
+              <h1 className="text-lg">To-Do Completion Statistics</h1>
+              <p className="text-xs text-gray-500">Track completion rates by branch, team, and individual</p>
             </div>
 
             <button

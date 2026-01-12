@@ -16,6 +16,7 @@ import { PositionManagement } from './admin/PositionManagement';
 import { KPIStructureManagement } from './admin/KPIStructureManagement';
 import { EmployeeManagement } from './admin/EmployeeManagement';
 import { VideoManagement } from './admin/VideoManagement';
+import { VideoAnalytics } from './admin/VideoAnalytics';
 import { TodoManagement } from './admin/TodoManagement';
 import { TodoStatistics } from './admin/TodoStatistics';
 import { NotificationCenter } from './NotificationCenter';
@@ -68,6 +69,9 @@ export function DesktopApp() {
     if (activePage === 'Admin:videos') {
       return <VideoManagement onBack={handleAdminBack} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
     }
+    if (activePage === 'Admin:video-analytics') {
+      return <VideoAnalytics onBack={handleAdminBack} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+    }
     if (activePage === 'Admin:todos') {
       return <TodoManagement onBack={handleAdminBack} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
     }
@@ -80,6 +84,7 @@ export function DesktopApp() {
       case 'Home': return <Home simulatedScore={simulatedScore} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} onNavigate={setActivePage} />;
       case 'My Performance': return <MyPerformance unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
       case 'To-Do Statistics': return <TodoStatistics onBack={() => setActivePage('To-Do List')} unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
+      case 'Video Analytics': return <VideoAnalytics unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
       case 'Scorecard': return <Scoreboard unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
       case 'Achievement': return <Achievement unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;
       case 'All KPI Result': return <AllKPIResult unreadNotificationsCount={unreadNotificationsCount} onNotificationClick={() => setIsNotificationOpen(true)} />;

@@ -10,9 +10,11 @@ interface PerformanceScreenProps {
   onBack: () => void;
   onKPIClick: (kpiName: string) => void;
   filterStatus?: 'all' | 'excellent' | 'good' | 'warning' | 'critical';
+  notificationCount?: number;
+  onNavigate?: (screen: string) => void;
 }
 
-export function PerformanceScreen({ onBack, onKPIClick, filterStatus: initialFilter }: PerformanceScreenProps) {
+export function PerformanceScreen({ onBack, onKPIClick, filterStatus: initialFilter, notificationCount, onNavigate }: PerformanceScreenProps) {
   const [activeTab, setActiveTab] = useState<'summary' | 'kpis' | 'sales'>('summary');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'excellent' | 'good' | 'warning' | 'critical'>(initialFilter || 'all');
@@ -108,6 +110,10 @@ export function PerformanceScreen({ onBack, onKPIClick, filterStatus: initialFil
         title="My Performance" 
         showBack={true} 
         onBack={onBack}
+        showNotification={true}
+        showProfile={true}
+        notificationCount={notificationCount}
+        onNavigate={onNavigate}
       />
 
       {/* Tabs */}

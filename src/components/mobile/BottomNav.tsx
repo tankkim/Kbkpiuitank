@@ -1,4 +1,4 @@
-import { Home, TrendingUp, Trophy, Calculator } from 'lucide-react';
+import { Home, TrendingUp, Trophy, Calculator, CheckSquare } from 'lucide-react';
 
 interface BottomNavProps {
   activeScreen: string;
@@ -9,6 +9,7 @@ interface BottomNavProps {
 export function BottomNav({ activeScreen, onNavigate, notificationCount = 0 }: BottomNavProps) {
   const navItems = [
     { id: 'home', icon: Home, label: 'Home' },
+    { id: 'todos', icon: CheckSquare, label: 'To-Do' },
     { id: 'performance', icon: TrendingUp, label: 'My KPIs' },
     { id: 'rankings', icon: Trophy, label: 'Rankings' },
     { id: 'simulator', icon: Calculator, label: 'Simulator' },

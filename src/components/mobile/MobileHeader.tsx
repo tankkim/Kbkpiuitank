@@ -1,7 +1,10 @@
-import { Bell } from 'lucide-react';
+import { Bell, ArrowLeft } from 'lucide-react';
 import kbLogo from 'figma:asset/19e82ce61f63603c01227c771a0472c896a04d0c.png';
 
 interface MobileHeaderProps {
+  title?: string;
+  showBack?: boolean;
+  onBack?: () => void;
   showNotification?: boolean;
   showProfile?: boolean;
   notificationCount?: number;
@@ -9,6 +12,9 @@ interface MobileHeaderProps {
 }
 
 export function MobileHeader({ 
+  title,
+  showBack = false,
+  onBack,
   showNotification = false,
   showProfile = false,
   notificationCount = 0,
@@ -17,18 +23,32 @@ export function MobileHeader({
   return (
     <div className="bg-white border-b border-gray-200 shadow-sm">
       <div className="px-4 py-1.5 flex items-center justify-between">
-        {/* Left - KB Bank Logo (Cropped & Maximized) */}
-        <div className="flex items-center -my-1">
-          <img 
-            src={kbLogo} 
-            alt="KB Bank" 
-            className="h-14 w-auto object-contain"
-            style={{ 
-              objectFit: 'cover',
-              objectPosition: 'center',
-              transform: 'scale(1.3)'
-            }}
-          />
+        {/* Left - KB Bank Logo or Back Button + Title */}
+        <div className="flex items-center gap-2 -my-1">
+          {showBack && onBack ? (
+            <>
+              <button 
+                onClick={onBack}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-700" />
+              </button>
+              {title && (
+                <h1 className="text-base font-semibold text-gray-900">{title}</h1>
+              )}
+            </>
+          ) : (
+            <img 
+              src={kbLogo} 
+              alt="KB Bank" 
+              className="h-14 w-auto object-contain"
+              style={{ 
+                objectFit: 'cover',
+                objectPosition: 'center',
+                transform: 'scale(1.3)'
+              }}
+            />
+          )}
         </div>
         
         {/* Right - Actions */}

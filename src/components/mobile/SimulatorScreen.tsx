@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronUp, ChevronDown, ArrowDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, ArrowDown } from 'lucide-react';
+import { MobileHeader } from './MobileHeader';
 
 interface SimulatorScreenProps {
   onBack: () => void;
   onScoreChange: (score: number) => void;
+  notificationCount?: number;
+  onNavigate?: (screen: string) => void;
 }
 
 interface SimulationData {
@@ -24,7 +27,7 @@ interface SimulationData {
   finalScore: number;
 }
 
-export function SimulatorScreen({ onBack, onScoreChange }: SimulatorScreenProps) {
+export function SimulatorScreen({ onBack, onScoreChange, notificationCount, onNavigate }: SimulatorScreenProps) {
   const [period, setPeriod] = useState('31-Jul-25');
   const [planMonth, setPlanMonth] = useState(1);
 
@@ -318,12 +321,15 @@ export function SimulatorScreen({ onBack, onScoreChange }: SimulatorScreenProps)
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Compact Header */}
-      <div className="bg-white border-b border-gray-200 px-3 py-2.5 flex items-center sticky top-0 z-10">
-        <button onClick={onBack} className="p-1 -ml-1 hover:bg-gray-100 rounded">
-          <ChevronLeft className="w-5 h-5 text-gray-700" />
-        </button>
-        <h1 className="text-sm font-semibold text-gray-900 ml-2">KPI Simulator</h1>
-      </div>
+      <MobileHeader
+        showBack={true}
+        onBack={onBack}
+        title="KPI Simulator"
+        showNotification={true}
+        showProfile={true}
+        notificationCount={notificationCount}
+        onNavigate={onNavigate}
+      />
 
       {/* Content */}
       <div className="p-3 space-y-3">

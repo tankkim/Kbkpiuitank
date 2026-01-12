@@ -1,4 +1,4 @@
-import { Home, BarChart3, Trophy, FileText, Map, Building2, Settings, User, Shield, Database, Play, CheckSquare, TrendingUp } from 'lucide-react';
+import { Home, BarChart3, Trophy, FileText, Map, Building2, Settings, User, Shield, Database, Play, CheckSquare, TrendingUp, Eye } from 'lucide-react';
 import kbLogo from 'figma:asset/cfc85c37a40df7102bb79390385b615854d5d785.png';
 
 interface SidebarProps {
@@ -13,6 +13,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: 'Video Training', label: 'Video Training', shortLabel: 'Videos', icon: Play, type: 'personal' },
     { id: 'To-Do List', label: 'To-Do List', shortLabel: 'To-Do', icon: CheckSquare, type: 'personal' },
     { id: 'To-Do Statistics', label: 'To-Do Statistics', shortLabel: 'To-Do\nStats', icon: TrendingUp, type: 'admin' },
+    { id: 'Video Analytics', label: 'Video Analytics', shortLabel: 'Video\nStats', icon: Eye, type: 'admin' },
     { id: 'Scorecard', label: 'Scorecard', shortLabel: 'Score', icon: BarChart3, type: 'admin' },
     { id: 'Achievement', label: 'Achievement', shortLabel: 'Achieve', icon: Trophy, type: 'admin' },
     { id: 'All KPI Result', label: 'All KPI Result', shortLabel: 'All KPI', icon: FileText, type: 'admin' },

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertTriangle, Target, CheckCircle, X, Send, TrendingDown, TrendingUp, Minus, ChevronDown, ChevronUp, Play, CheckSquare } from 'lucide-react';
+import { AlertTriangle, Target, CheckCircle, X, Send, TrendingDown, TrendingUp, Minus, ChevronDown, ChevronUp, Play } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { MobileHeader } from './MobileHeader';
 import { currentEmployee } from '../../data/myPerformanceData';
@@ -196,40 +196,32 @@ export function HomeScreen({ onNavigate, notificationCount, simulatedScore }: Ho
           </div>
         </div>
 
-        {/* Quick Access */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-          <h3 className="text-sm text-gray-900 font-semibold mb-3">Quick Access</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => onNavigate('videos')}
-              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 hover:shadow-md transition-all active:scale-95"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Play className="w-5 h-5 text-white" />
-                </div>
-                <div className="text-left flex-1">
-                  <div className="text-sm font-semibold text-gray-900">Video Training</div>
-                  <div className="text-xs text-gray-600 mt-0.5">6 videos</div>
-                </div>
-              </div>
-            </button>
-
-            <button
-              onClick={() => onNavigate('todos')}
-              className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200 hover:shadow-md transition-all active:scale-95"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <CheckSquare className="w-5 h-5 text-white" />
-                </div>
-                <div className="text-left flex-1">
-                  <div className="text-sm font-semibold text-gray-900">To-Do List</div>
-                  <div className="text-xs text-gray-600 mt-0.5">4 tasks today</div>
-                </div>
-              </div>
-            </button>
+        {/* Training Videos */}
+        <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Play className="w-5 h-5 text-white" />
+              <h3 className="text-sm text-white font-bold">Training Videos</h3>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-full">
+              <span className="text-xs text-white font-semibold">6 Available</span>
+            </div>
           </div>
+          
+          <button
+            onClick={() => onNavigate('videos')}
+            className="w-full bg-white/95 hover:bg-white rounded-xl p-3.5 transition-all active:scale-98 shadow-sm"
+          >
+            <div className="flex items-center justify-between">
+              <div className="text-left">
+                <div className="text-sm font-semibold text-gray-900">Watch Training Videos</div>
+                <div className="text-xs text-gray-600 mt-1">Learn and develop your skills</div>
+              </div>
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Play className="w-4 h-4 text-white" />
+              </div>
+            </div>
+          </button>
         </div>
 
         {/* Urgent Alerts */}

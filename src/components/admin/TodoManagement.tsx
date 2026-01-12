@@ -11,8 +11,19 @@ interface TodoManagementProps {
 export function TodoManagement({ onBack, unreadNotificationsCount, onNotificationClick }: TodoManagementProps) {
   const [templates, setTemplates] = useState<TodoTemplate[]>(todoTemplates);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<TodoTemplate | null>(null);
   const [selectedPosition, setSelectedPosition] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Form states
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    position: '',
+    category: 'Management',
+    priority: 'medium' as 'high' | 'medium' | 'low'
+  });
 
   const positions = ['all', ...Array.from(new Set(templates.map(t => t.position)))];
 
@@ -145,54 +156,82 @@ export function TodoManagement({ onBack, unreadNotificationsCount, onNotificatio
           </div>
         </div>
 
-        {/* Templates Grid */}
-        <div className="grid grid-cols-3 gap-2.5">
-          {filteredTemplates.map(template => (
-            <div
-              key={template.id}
-              className="bg-white rounded-lg border border-gray-200 p-2.5 hover:shadow-lg transition-shadow"
-            >
-              <div className="flex items-start justify-between mb-1.5">
-                <h3 className="text-xs flex-1">{template.title}</h3>
-                <div className="flex items-center gap-0.5">
-                  <button className="p-0.5 hover:bg-gray-100 rounded">
-                    <Edit className="w-3 h-3 text-gray-400" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteTemplate(template.id)}
-                    className="p-0.5 hover:bg-red-100 rounded"
-                  >
-                    <Trash2 className="w-3 h-3 text-red-400" />
-                  </button>
-                </div>
-              </div>
-
-              <p className="text-xs text-gray-500 mb-2 line-clamp-2">{template.description}</p>
-
-              <div className="flex items-center gap-1.5 flex-wrap mb-2">
-                <span className={`px-1.5 py-0.5 rounded text-xs border ${priorityColors[template.priority]}`}>
-                  {template.priority.toUpperCase()}
-                </span>
-                <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
-                  {template.category}
-                </span>
-                <span className="px-1.5 py-0.5 bg-blue-100 text-blue-600 rounded text-xs">
-                  {template.estimatedMinutes} min
-                </span>
-              </div>
-
-              <div className="text-xs text-gray-500 border-t border-gray-100 pt-1.5">
-                <div className="flex items-center justify-between">
-                  <span>Position:</span>
-                  <span className="font-semibold text-gray-700">{template.position}</span>
-                </div>
-                <div className="flex items-center justify-between mt-0.5">
-                  <span>Created:</span>
-                  <span className="font-semibold text-gray-700">{template.createdDate}</span>
-                </div>
-              </div>
+        {/* Templates List */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-2 py-1.5 text-left font-semibold text-gray-700">Task</th>
+                  <th className="px-2 py-1.5 text-left font-semibold text-gray-700">Position</th>
+                  <th className="px-2 py-1.5 text-left font-semibold text-gray-700">Category</th>
+                  <th className="px-2 py-1.5 text-left font-semibold text-gray-700">Priority</th>
+                  <th className="px-2 py-1.5 text-left font-semibold text-gray-700">Created</th>
+                  <th className="px-2 py-1.5 text-right font-semibold text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredTemplates.map(template => (
+                  <tr key={template.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-2 py-1.5">
+                      <div>
+                        <div className="font-semibold text-gray-900 mb-0.5">{template.title}</div>
+                        <div className="text-gray-500 text-[11px] line-clamp-1">{template.description}</div>
+                      </div>
+                    </td>
+                    <td className="px-2 py-1.5">
+                      <span className="text-gray-700">{template.position}</span>
+                    </td>
+                    <td className="px-2 py-1.5">
+                      <span className="px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded text-[10px]">
+                        {template.category}
+                      </span>
+                    </td>
+                    <td className="px-2 py-1.5">
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] border ${priorityColors[template.priority]}`}>
+                        {template.priority.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="px-2 py-1.5 text-gray-500">
+                      {template.createdDate}
+                    </td>
+                    <td className="px-2 py-1.5">
+                      <div className="flex items-center justify-end gap-0.5">
+                        <button
+                          onClick={() => {
+                            setSelectedTemplate(template);
+                            setFormData({
+                              title: template.title,
+                              description: template.description,
+                              position: template.position,
+                              category: template.category,
+                              priority: template.priority
+                            });
+                            setShowEditModal(true);
+                          }}
+                          className="p-1 hover:bg-gray-100 rounded"
+                        >
+                          <Edit className="w-3.5 h-3.5 text-gray-500" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTemplate(template.id)}
+                          className="p-1 hover:bg-red-100 rounded"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          {filteredTemplates.length === 0 && (
+            <div className="p-6 text-center text-gray-500 text-xs">
+              No templates found. Click "Add Template" to create one.
             </div>
-          ))}
+          )}
         </div>
       </div>
 
@@ -225,24 +264,24 @@ export function TodoManagement({ onBack, unreadNotificationsCount, onNotificatio
                 
                 <div>
                   <label className="block text-xs mb-0.5">Category</label>
-                  <input type="text" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+                  <select className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs">
+                    <option value="Management">Management</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Reporting">Reporting</option>
+                    <option value="Communication">Communication</option>
+                    <option value="Operations">Operations</option>
+                    <option value="Compliance">Compliance</option>
+                  </select>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-xs mb-0.5">Priority</label>
-                  <select className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs">
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-xs mb-0.5">Estimated Time (minutes)</label>
-                  <input type="number" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
-                </div>
+              <div>
+                <label className="block text-xs mb-0.5">Priority</label>
+                <select className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs">
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
               </div>
             </div>
 
@@ -261,6 +300,99 @@ export function TodoManagement({ onBack, unreadNotificationsCount, onNotificatio
                 className="flex-1 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs"
               >
                 Create Template
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Template Modal */}
+      {showEditModal && selectedTemplate && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-xl w-full p-3">
+            <h2 className="text-sm mb-3">Edit To-Do Template</h2>
+            
+            <div className="space-y-2">
+              <div>
+                <label className="block text-xs mb-0.5">Task Title</label>
+                <input
+                  type="text"
+                  className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-xs mb-0.5">Description</label>
+                <textarea
+                  className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs"
+                  rows={2}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs mb-0.5">Position</label>
+                  <select
+                    className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs"
+                    value={formData.position}
+                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                  >
+                    {positions.filter(p => p !== 'all').map(pos => (
+                      <option key={pos}>{pos}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-xs mb-0.5">Category</label>
+                  <select
+                    className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  >
+                    <option value="Management">Management</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Reporting">Reporting</option>
+                    <option value="Communication">Communication</option>
+                    <option value="Operations">Operations</option>
+                    <option value="Compliance">Compliance</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs mb-0.5">Priority</label>
+                <select
+                  className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs"
+                  value={formData.priority}
+                  onChange={(e) => setFormData({ ...formData, priority: e.target.value as 'high' | 'medium' | 'low' })}
+                >
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 mt-3">
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="flex-1 px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  alert('Template would be updated here');
+                  setShowEditModal(false);
+                }}
+                className="flex-1 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs"
+              >
+                Update Template
               </button>
             </div>
           </div>

@@ -5,9 +5,11 @@ import { MobileHeader } from './MobileHeader';
 
 interface VideoScreenProps {
   onBack: () => void;
+  notificationCount?: number;
+  onNavigate?: (screen: string) => void;
 }
 
-export function VideoScreen({ onBack }: VideoScreenProps) {
+export function VideoScreen({ onBack, notificationCount, onNavigate }: VideoScreenProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [showFilters, setShowFilters] = useState(false);
@@ -84,7 +86,15 @@ export function VideoScreen({ onBack }: VideoScreenProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MobileHeader title="Video Training" onBack={onBack} />
+      <MobileHeader 
+        title="Video Training" 
+        showBack={true}
+        onBack={onBack}
+        showNotification={true}
+        showProfile={true}
+        notificationCount={notificationCount}
+        onNavigate={onNavigate}
+      />
 
       <div className="p-3">
         {/* Stats */}
@@ -146,7 +156,7 @@ export function VideoScreen({ onBack }: VideoScreenProps) {
         </div>
 
         {/* Videos */}
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-2 gap-2">
           {filteredVideos.map(video => {
             const watchRecord = watchRecords[video.id];
             const isCompleted = watchRecord?.completionRate === 100;
@@ -155,7 +165,7 @@ export function VideoScreen({ onBack }: VideoScreenProps) {
               <div
                 key={video.id}
                 onClick={() => handleVideoClick(video)}
-                className="bg-white rounded-lg border border-gray-200 overflow-hidden active:scale-98 transition-transform"
+                className="bg-white rounded-lg border border-gray-200 overflow-hidden active:scale-95 transition-transform"
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-video bg-gray-100">
@@ -167,54 +177,52 @@ export function VideoScreen({ onBack }: VideoScreenProps) {
                   
                   {/* Play Overlay */}
                   <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                    <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center">
-                      <Play className="w-6 h-6 text-blue-600 ml-0.5" />
+                    <div className="w-10 h-10 bg-white/90 rounded-full flex items-center justify-center">
+                      <Play className="w-5 h-5 text-blue-600 ml-0.5" />
                     </div>
                   </div>
 
                   {/* Duration Badge */}
-                  <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-0.5 rounded">
+                  <div className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1.5 py-0.5 rounded">
                     {formatDuration(video.duration)}
                   </div>
 
                   {/* Required Badge */}
                   {video.isRequired && (
-                    <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded">
+                    <div className="absolute top-1 left-1 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded">
                       Required
                     </div>
                   )}
 
                   {/* Completed Badge */}
                   {isCompleted && (
-                    <div className="absolute top-2 right-2">
-                      <CheckCircle className="w-6 h-6 text-green-500 fill-white" />
+                    <div className="absolute top-1 right-1">
+                      <CheckCircle className="w-5 h-5 text-green-500 fill-white" />
                     </div>
                   )}
                 </div>
 
                 {/* Info */}
-                <div className="p-2.5">
-                  <h3 className="text-sm mb-1 line-clamp-2">{video.title}</h3>
-                  <p className="text-xs text-gray-500 line-clamp-1 mb-2">{video.description}</p>
+                <div className="p-2">
+                  <h3 className="text-xs font-semibold mb-1 line-clamp-2 leading-tight">{video.title}</h3>
                   
-                  <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-                    <span className="flex items-center gap-1">
+                  <div className="flex items-center gap-2 text-[10px] text-gray-500 mb-1.5">
+                    <span className="flex items-center gap-0.5">
                       <Eye className="w-3 h-3" />
                       {video.viewCount}
                     </span>
-                    <span>{video.category}</span>
                   </div>
 
                   {/* Progress */}
                   {watchRecord && (
                     <div>
-                      <div className="flex items-center justify-between text-xs mb-1">
+                      <div className="flex items-center justify-between text-[10px] mb-1">
                         <span className="text-gray-600">Progress</span>
                         <span className="font-semibold">{watchRecord.completionRate}%</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                      <div className="w-full bg-gray-200 rounded-full h-1">
                         <div
-                          className="bg-blue-600 h-1.5 rounded-full transition-all"
+                          className="bg-blue-600 h-1 rounded-full transition-all"
                           style={{ width: `${watchRecord.completionRate}%` }}
                         />
                       </div>

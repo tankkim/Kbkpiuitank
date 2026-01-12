@@ -60,6 +60,8 @@ export function MobileApp() {
             onBack={() => handleNavigate('home')}
             onKPIClick={handleKPIClick}
             filterStatus={filterStatus}
+            notificationCount={unreadNotificationsCount}
+            onNavigate={handleNavigate}
           />
         )}
 
@@ -68,6 +70,8 @@ export function MobileApp() {
             kpiName={selectedKPI!}
             kpiData={selectedKPIData}
             onBack={handleBackFromKPIDetail}
+            notificationCount={unreadNotificationsCount}
+            onNavigate={handleNavigate}
           />
         )}
 
@@ -75,6 +79,8 @@ export function MobileApp() {
           <NotificationsScreen 
             onBack={() => handleNavigate('home')} 
             onKPIClick={handleKPIClick}
+            notificationCount={unreadNotificationsCount}
+            onNavigate={handleNavigate}
           />
         )}
 
@@ -82,25 +88,41 @@ export function MobileApp() {
           <SimulatorScreen 
             onBack={() => handleNavigate('home')}
             onScoreChange={setSimulatedScore}
+            notificationCount={unreadNotificationsCount}
+            onNavigate={handleNavigate}
           />
         )}
 
         {activeScreen === 'rankings' && (
-          <RankingsScreen onBack={() => handleNavigate('home')} />
+          <RankingsScreen 
+            onBack={() => handleNavigate('home')}
+            notificationCount={unreadNotificationsCount}
+            onNavigate={handleNavigate}
+          />
         )}
 
         {activeScreen === 'profile' && (
           <ProfileScreen 
             onBack={() => handleNavigate('home')}
+            notificationCount={unreadNotificationsCount}
+            onNavigate={handleNavigate}
           />
         )}
 
         {activeScreen === 'videos' && (
-          <VideoScreen onBack={() => handleNavigate('home')} />
+          <VideoScreen 
+            onBack={() => handleNavigate('home')}
+            notificationCount={unreadNotificationsCount}
+            onNavigate={handleNavigate}
+          />
         )}
 
         {activeScreen === 'todos' && (
-          <TodoScreen onBack={() => handleNavigate('home')} />
+          <TodoScreen 
+            onBack={() => handleNavigate('home')}
+            notificationCount={unreadNotificationsCount}
+            onNavigate={handleNavigate}
+          />
         )}
       </div>
 

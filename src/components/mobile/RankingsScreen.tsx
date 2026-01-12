@@ -5,9 +5,11 @@ import { allKPIResultData } from '../../data/allKPIResultData';
 
 interface RankingsScreenProps {
   onBack: () => void;
+  notificationCount?: number;
+  onNavigate?: (screen: string) => void;
 }
 
-export function RankingsScreen({ onBack }: RankingsScreenProps) {
+export function RankingsScreen({ onBack, notificationCount, onNavigate }: RankingsScreenProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
   const [selectedBranch, setSelectedBranch] = useState<any>(null);
@@ -378,7 +380,15 @@ export function RankingsScreen({ onBack }: RankingsScreenProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <MobileHeader title="Rankings" showBack={true} onBack={onBack} />
+      <MobileHeader 
+        title="Rankings" 
+        showBack={true} 
+        onBack={onBack}
+        showNotification={true}
+        showProfile={true}
+        notificationCount={notificationCount}
+        onNavigate={onNavigate}
+      />
 
       <div className="p-3 space-y-2">
         {/* Stats Summary */}
